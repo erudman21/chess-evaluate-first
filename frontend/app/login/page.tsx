@@ -2,40 +2,63 @@
 
 import { Form, Formik } from "formik";
 import React from "react";
-import { MeDocument, useLoginMutation } from "../../generated/graphql";
-import TextInput from "../FormUtils/TextInput";
+import {
+  MeDocument,
+  useLoginMutation,
+  useLogoutMutation,
+} from "../../generated/graphql";
+import { InputField } from "../components/InputField";
+import { Box, Button } from "@chakra-ui/react";
+import { useRouter } from "next/navigation";
+import { toErrorMap } from "../utils/toErrorMap";
 
 type LoginProps = {};
 
 const Login: React.FC<LoginProps> = ({}) => {
-  const [login] = useLoginMutation({
+  const [login, { loading: loginLoading }] = useLoginMutation({
+    refetchQueries: [MeDocument],
+    awaitRefetchQueries: true,
+  });
+  const [logout, { loading: logoutLoading }] = useLogoutMutation({
     refetchQueries: [MeDocument],
   });
+  const router = useRouter();
 
   return (
     <Formik
       initialValues={{ username: "", password: "" }}
-      onSubmit={async (values, { setErrors }) => {
+      onSubmit={async ({ username, password }, { setErrors }) => {
         const { data } = await login({
           variables: {
-            loginInput: values,
+            loginInput: {
+              username,
+              password,
+            },
           },
         });
         if (data?.login.errors) {
-          const errors: Record<string, string> = {};
-          data.login.errors.forEach(
-            (error) => (errors[error.field] = error.message)
-          );
-          setErrors(errors);
+          setErrors(toErrorMap(data.login.errors));
+        } else if (data?.login.user) {
+          console.log(data?.login.user);
+          router.push("/");
         }
       }}
     >
       {({ isSubmitting, dirty }) => (
         <Form className="space-y-8 mt-8">
-          <TextInput name="username" autoFocus />
-          <TextInput name="password" type="password" />
-          <div>
-            <button
+          <Box mt={4}>
+            <InputField
+              name="username"
+              placeholder="username"
+              label="username"
+              autoFocus
+            />
+            <InputField
+              name="password"
+              placeholder="password"
+              label="password"
+            />
+            <Button
               disabled={isSubmitting || !dirty}
               type="submit"
               className={`button-default flex mt-16 w-full relative ${
@@ -43,8 +66,8 @@ const Login: React.FC<LoginProps> = ({}) => {
               }`}
             >
               Log In
-            </button>
-          </div>
+            </Button>
+          </Box>
         </Form>
       )}
     </Formik>

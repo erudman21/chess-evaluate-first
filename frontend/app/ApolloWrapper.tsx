@@ -1,6 +1,7 @@
 "use client";
 
 import { HttpLink } from "@apollo/client";
+import Providers from "./Providers";
 import {
   ApolloNextAppProvider,
   NextSSRInMemoryCache,
@@ -11,15 +12,15 @@ const makeClient = () =>
   new NextSSRApolloClient({
     cache: new NextSSRInMemoryCache(),
     link: new HttpLink({
-      uri: "https://example.com/api/graphql",
-      fetchOptions: { cache: "no-store" },
+      uri: "http://localhost:4000/graphql",
+      credentials: "include",
     }),
   });
 
 export function ApolloWrapper({ children }: React.PropsWithChildren) {
   return (
     <ApolloNextAppProvider makeClient={makeClient}>
-      {children}
+      <Providers>{children}</Providers>
     </ApolloNextAppProvider>
   );
 }

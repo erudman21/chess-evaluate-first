@@ -32,8 +32,8 @@ const loginError = {
 @Resolver(User)
 export class UserResolver {
   @Query(() => User, { nullable: true })
-  me(@Ctx() { req }: any) {
-    log(req);
+  me(@Ctx() { req }: MyContext) {
+    log(req.session);
     if (!req.session.userId) {
       return null;
     }
@@ -103,8 +103,8 @@ export class UserResolver {
       };
     }
 
-    log(req.session);
     req.session.userId = user.id;
+    log(req.session);
 
     return { user };
   }
