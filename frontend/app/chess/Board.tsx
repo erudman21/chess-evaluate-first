@@ -1,13 +1,15 @@
-import BoardRow from "./BoardRow";
+import Square from "./Square";
 
 const Board = () => {
-  const rows = new Array(8).fill(new Array(8).fill(1));
+  const board = [
+    ...Array(64)
+      .fill(null)
+      .map((_, i) => <Square index={i} key={i} />),
+  ];
 
   return (
-    <div className="outline outline-1 mt-36">
-      {rows.map((row, rowIndex) => (
-        <BoardRow row={row} rowIndex={rowIndex} key={rowIndex} />
-      ))}
+    <div className="outline outline-1 flex flex-wrap w-board mr-10 aspect-square">
+      {board}
     </div>
   );
 };

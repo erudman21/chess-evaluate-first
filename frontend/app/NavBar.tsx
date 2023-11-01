@@ -24,10 +24,10 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
   if (!data?.me) {
     body = (
       <>
-        <Button>
+        <Button backgroundColor="teal">
           <NextLink href="login">Login</NextLink>
         </Button>
-        <Button>
+        <Button backgroundColor="blue">
           <NextLink href="register">Register</NextLink>
         </Button>
       </>
@@ -48,7 +48,7 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
   }
 
   return (
-    <div>
+    <div className="flex-grow text-center">
       <NextLink href="/">
         <h2>Chessalyze</h2>
       </NextLink>

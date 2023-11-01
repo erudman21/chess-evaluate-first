@@ -14,4 +14,10 @@ export class User extends BaseEntity {
 
   @Column()
   password!: string;
+
+  @Field()
+  @Column({ default: "" })
+  lichessUsername: string;
+
+  // ADD list of games
 }
