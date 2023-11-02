@@ -11,6 +11,7 @@ import { UserResolver } from "./resolvers/user";
 import { AppDataSource } from "./dataSource";
 import { ApolloServerPluginLandingPageLocalDefault } from "@apollo/server/plugin/landingPage/default";
 import bodyParser from "body-parser";
+import { LichessResolver } from "./resolvers/lichess";
 
 const main = async () => {
   const conn = await AppDataSource.initialize();
@@ -20,7 +21,7 @@ const main = async () => {
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [UserResolver],
+      resolvers: [UserResolver, LichessResolver],
       validate: false,
     }),
     plugins: [ApolloServerPluginLandingPageLocalDefault()],

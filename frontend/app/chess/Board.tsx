@@ -1,7 +1,7 @@
 import Square from "./Square";
 
-const Board = () => {
-  const board = [
+const Board = ({ pieces }: any) => {
+  const squares = [
     ...Array(64)
       .fill(null)
       .map((_, i) => <Square index={i} key={i} />),
@@ -9,7 +9,8 @@ const Board = () => {
 
   return (
     <div className="outline outline-1 flex flex-wrap w-board mr-10 aspect-square">
-      {board}
+      {squares}
+      {pieces}
     </div>
   );
 };
