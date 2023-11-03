@@ -9,7 +9,8 @@ import {
   useMeQuery,
 } from "../generated/graphql";
 import { Metadata } from "next";
-import { Button, ModalHeader } from "@chakra-ui/react";
+import { Button, Heading, ModalHeader } from "@chakra-ui/react";
+import AuthForm from "./authForm";
 
 interface NavBarProps {}
 
@@ -26,16 +27,7 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
   let body = null;
 
   if (!data?.me) {
-    body = (
-      <>
-        <Button backgroundColor="teal">
-          <NextLink href="login">Login</NextLink>
-        </Button>
-        <Button backgroundColor="blue">
-          <NextLink href="register">Register</NextLink>
-        </Button>
-      </>
-    );
+    body = <AuthForm />;
   } else if (data.me) {
     body = (
       <>
@@ -52,9 +44,11 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
   }
 
   return (
-    <div className="flex-grow text-center">
+    <div className="flex-grow text-center space-y-5">
       <NextLink href="/">
-        <h2>Chessalyze</h2>
+        <Heading as="h1" size="3xl">
+          Chessalyze
+        </Heading>
       </NextLink>
       <div>{body}</div>
     </div>
