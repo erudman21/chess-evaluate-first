@@ -3,9 +3,13 @@
 import NextLink from "next/link";
 import { useRouter } from "next/navigation";
 import React from "react";
-import { useLogoutMutation, useMeQuery } from "../generated/graphql";
+import {
+  MeDocument,
+  useLogoutMutation,
+  useMeQuery,
+} from "../generated/graphql";
 import { Metadata } from "next";
-import { Button } from "@chakra-ui/react";
+import { Button, ModalHeader } from "@chakra-ui/react";
 
 interface NavBarProps {}
 
@@ -16,8 +20,8 @@ export const metadata: Metadata = {
 export const NavBar: React.FC<NavBarProps> = ({}) => {
   const router = useRouter();
   const { data, loading: meLoading, error: meError } = useMeQuery();
-  const [logoutMutation, { loading, error }] = useLogoutMutation({
-    variables: {},
+  const [logout] = useLogoutMutation({
+    refetchQueries: [MeDocument],
   });
   let body = null;
 
@@ -38,7 +42,7 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
         <div>{data.me.username}</div>
         <button
           onClick={async () => {
-            await logoutMutation();
+            await logout();
           }}
         >
           Logout

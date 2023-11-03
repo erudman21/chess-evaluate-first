@@ -15,12 +15,11 @@ import { toErrorMap } from "../utils/toErrorMap";
 type LoginProps = {};
 
 const Login: React.FC<LoginProps> = ({}) => {
-  const [login, { loading: loginLoading }] = useLoginMutation({
-    refetchQueries: [MeDocument],
-    awaitRefetchQueries: true,
+  const [login] = useLoginMutation({
+    refetchQueries: [{ query: MeDocument }],
   });
-  const [logout, { loading: logoutLoading }] = useLogoutMutation({
-    refetchQueries: [MeDocument],
+  const [logout] = useLogoutMutation({
+    refetchQueries: [{ query: MeDocument }],
   });
   const router = useRouter();
 
@@ -55,6 +54,7 @@ const Login: React.FC<LoginProps> = ({}) => {
             />
             <InputField
               name="password"
+              type="password"
               placeholder="password"
               label="password"
             />
