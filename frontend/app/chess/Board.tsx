@@ -1,12 +1,15 @@
 import { Button } from "@chakra-ui/react";
-import { Chess } from "chess.js";
+import { Chess, Square } from "chess.js";
 import ChessBoard from "chessboardjsx";
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
+import Engine, { StockfishResponse } from "./Engine";
 
 const Board = () => {
-  const [game, _] = useState(new Chess());
+  const game = useMemo(() => new Chess(), []);
   const [position, setPosition] = useState("start");
   const [gameStatus, setGameStatus] = useState("");
+  const engine = useMemo(() => new Engine(), []);
+  const [bm, setBm] = useState("");
 
   const onDrop = ({ sourceSquare, targetSquare }: any) => {
     try {
@@ -18,6 +21,15 @@ const Board = () => {
       if (move === null) return;
 
       setPosition(game.fen());
+
+      engine.evaluatePosition(game.fen(), 20);
+      engine.onMessage(({ bestMove }: StockfishResponse) => {
+        if (bestMove) {
+          game.get(bestMove.substring(0, 2) as Square);
+          console.log(game.get(bestMove.substring(0, 2) as Square));
+          setBm(bestMove);
+        }
+      });
 
       if (game.isGameOver()) {
         if (game.isCheckmate()) {
@@ -43,6 +55,7 @@ const Board = () => {
 
   return (
     <div>
+      <div className="absolute top-8 text-lg">{bm}</div>
       <ChessBoard width={800} position={position} onDrop={onDrop} />
       {position === "start" ? (
         ""
@@ -55,7 +68,7 @@ const Board = () => {
           Reset Board
         </Button>
       )}
-      {gameStatus === "" ? "" : <div>Game Over!</div>}
+      {gameStatus === "" ? "" : <div>Game Over! {}</div>}
     </div>
   );
 };
