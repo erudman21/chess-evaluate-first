@@ -1,0 +1,18 @@
+query Games($username: String!) {
+  games(username: $username) {
+    date
+    speed
+    winner
+    moves
+    players {
+      black {
+        rating
+        name
+      }
+      white {
+        name
+        rating
+      }
+    }
+  }
+}

@@ -15,12 +15,34 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
+  DateTimeISO: { input: any; output: any; }
 };
 
 export type FieldError = {
   __typename?: 'FieldError';
   field: Scalars['String']['output'];
   message: Scalars['String']['output'];
+};
+
+export type LichessPlayer = {
+  __typename?: 'LichessPlayer';
+  name?: Maybe<Scalars['String']['output']>;
+  rating?: Maybe<Scalars['Float']['output']>;
+};
+
+export type LichessPlayers = {
+  __typename?: 'LichessPlayers';
+  black: LichessPlayer;
+  white: LichessPlayer;
+};
+
+export type LichessResponse = {
+  __typename?: 'LichessResponse';
+  date: Scalars['DateTimeISO']['output'];
+  moves: Scalars['String']['output'];
+  players: LichessPlayers;
+  speed: Scalars['String']['output'];
+  winner: Scalars['String']['output'];
 };
 
 export type Mutation = {
@@ -42,12 +64,19 @@ export type MutationRegisterArgs = {
 
 export type Query = {
   __typename?: 'Query';
+  games: Array<LichessResponse>;
   me?: Maybe<User>;
+};
+
+
+export type QueryGamesArgs = {
+  username: Scalars['String']['input'];
 };
 
 export type User = {
   __typename?: 'User';
   id: Scalars['Int']['output'];
+  lichessUsername: Scalars['String']['output'];
   username: Scalars['String']['output'];
 };
 
@@ -80,6 +109,13 @@ export type RegisterMutationVariables = Exact<{
 
 
 export type RegisterMutation = { __typename?: 'Mutation', register: { __typename?: 'UserResponse', user?: { __typename?: 'User', id: number, username: string } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+
+export type GamesQueryVariables = Exact<{
+  username: Scalars['String']['input'];
+}>;
+
+
+export type GamesQuery = { __typename?: 'Query', games: Array<{ __typename?: 'LichessResponse', date: any, speed: string, winner: string, moves: string, players: { __typename?: 'LichessPlayers', black: { __typename?: 'LichessPlayer', rating?: number | null, name?: string | null }, white: { __typename?: 'LichessPlayer', name?: string | null, rating?: number | null } } }> };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -197,6 +233,54 @@ export function useRegisterMutation(baseOptions?: Apollo.MutationHookOptions<Reg
 export type RegisterMutationHookResult = ReturnType<typeof useRegisterMutation>;
 export type RegisterMutationResult = Apollo.MutationResult<RegisterMutation>;
 export type RegisterMutationOptions = Apollo.BaseMutationOptions<RegisterMutation, RegisterMutationVariables>;
+export const GamesDocument = gql`
+    query Games($username: String!) {
+  games(username: $username) {
+    date
+    speed
+    winner
+    moves
+    players {
+      black {
+        rating
+        name
+      }
+      white {
+        name
+        rating
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGamesQuery__
+ *
+ * To run a query within a React component, call `useGamesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGamesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGamesQuery({
+ *   variables: {
+ *      username: // value for 'username'
+ *   },
+ * });
+ */
+export function useGamesQuery(baseOptions: Apollo.QueryHookOptions<GamesQuery, GamesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GamesQuery, GamesQueryVariables>(GamesDocument, options);
+      }
+export function useGamesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GamesQuery, GamesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GamesQuery, GamesQueryVariables>(GamesDocument, options);
+        }
+export type GamesQueryHookResult = ReturnType<typeof useGamesQuery>;
+export type GamesLazyQueryHookResult = ReturnType<typeof useGamesLazyQuery>;
+export type GamesQueryResult = Apollo.QueryResult<GamesQuery, GamesQueryVariables>;
 export const MeDocument = gql`
     query Me {
   me {

@@ -1,13 +1,14 @@
+import { formatLichessResponse } from "../utils/formatLichessResponse";
 import { fetchLichessAPI } from "./../lichess";
 import { Arg, Field, ObjectType, Query, Resolver } from "type-graphql";
 
 @ObjectType()
 class LichessPlayer {
   @Field({ nullable: true })
-  id: string;
+  name: string;
 
   @Field({ nullable: true })
-  rating: number;
+  rating: string;
 }
 
 @ObjectType()
@@ -35,9 +36,6 @@ export class LichessResponse {
 
   @Field(() => String)
   moves: string;
-
-  @Field(() => String)
-  format: string;
 }
 
 @Resolver(LichessResponse)
@@ -46,10 +44,6 @@ export class LichessResolver {
   async games(@Arg("username") username: string): Promise<[LichessResponse]> {
     const data = await fetchLichessAPI(`/games/user/${username}`);
 
-    data.forEach((game: any) => {
-			game.players = 
-		});
-
-    return data;
+    return formatLichessResponse(data);
   }
 }
