@@ -1,14 +1,23 @@
 import { Button } from "@chakra-ui/react";
 import { Chess, Square } from "chess.js";
 import ChessBoard from "chessboardjsx";
-import { useMemo, useState } from "react";
+import { Dispatch, SetStateAction, useMemo, useState } from "react";
 import Engine, { StockfishResponse } from "./Engine";
 
-const Board = () => {
-  const game = useMemo(() => new Chess(), []);
-  const [position, setPosition] = useState("start");
+export type ChessBoardProps = {
+  setBoardState: Dispatch<SetStateAction<string>>;
+  boardState: string;
+  game: Chess;
+};
+
+const Board: React.FC<ChessBoardProps> = ({
+  game,
+  boardState,
+  setBoardState,
+}) => {
   const [gameStatus, setGameStatus] = useState("");
   const engine = useMemo(() => new Engine(), []);
+  // BestMove
   const [bm, setBm] = useState("");
 
   const onDrop = ({ sourceSquare, targetSquare }: any) => {
@@ -18,9 +27,10 @@ const Board = () => {
         to: targetSquare,
         promotion: "q",
       });
+      console.log(move);
       if (move === null) return;
 
-      setPosition(game.fen());
+      setBoardState(game.fen());
 
       engine.evaluatePosition(game.fen(), 20);
       engine.onMessage(({ bestMove }: StockfishResponse) => {
@@ -50,14 +60,14 @@ const Board = () => {
 
   const resetBoard = () => {
     game.reset();
-    setPosition("start");
+    setBoardState("start");
   };
 
   return (
     <div>
       <div className="absolute top-8 text-lg">{bm}</div>
-      <ChessBoard width={800} position={position} onDrop={onDrop} />
-      {position === "start" ? (
+      <ChessBoard width={800} position={boardState} onDrop={onDrop} />
+      {boardState === "start" ? (
         ""
       ) : (
         <Button

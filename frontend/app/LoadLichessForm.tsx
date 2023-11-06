@@ -6,8 +6,8 @@ import {
   Input,
 } from "@chakra-ui/react";
 import { Field, Form, Formik } from "formik";
+import { Dispatch, SetStateAction } from "react";
 import { LichessResponse, useGamesLazyQuery } from "../generated/graphql";
-import { Dispatch, SetStateAction, useState } from "react";
 
 type LoadLichessFormProps = {
   setGames: Dispatch<SetStateAction<LichessResponse[]>>;
@@ -21,12 +21,14 @@ const LoadLichessForm = ({ setGames }: LoadLichessFormProps) => {
       <Formik
         initialValues={{ username: "" }}
         onSubmit={async ({ username }) => {
-          const { data } = await loadGames({
+          const { data, error } = await loadGames({
             variables: { username: username },
           });
 
           if (data) {
             setGames(data.games);
+          } else {
+            console.log(error);
           }
         }}
       >

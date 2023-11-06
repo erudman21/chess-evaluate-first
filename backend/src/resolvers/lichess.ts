@@ -1,6 +1,6 @@
+import { Arg, Field, ObjectType, Query, Resolver } from "type-graphql";
 import { formatLichessResponse } from "../utils/formatLichessResponse";
 import { fetchLichessAPI } from "./../lichess";
-import { Arg, Field, ObjectType, Query, Resolver } from "type-graphql";
 
 @ObjectType()
 class LichessPlayer {
@@ -31,7 +31,7 @@ export class LichessResponse {
   @Field(() => LichessPlayers)
   players: { white: LichessPlayer; black: LichessPlayer };
 
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   winner: string;
 
   @Field(() => String)

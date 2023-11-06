@@ -1,23 +1,28 @@
 "use client";
 
+import { Flex } from "@chakra-ui/react";
+import { Metadata } from "next";
 import React from "react";
 import {
   MeDocument,
   useLogoutMutation,
   useMeQuery,
 } from "../generated/graphql";
-import { Metadata } from "next";
-import { Box, Flex } from "@chakra-ui/react";
-import NotLoggedInDisplay from "./NotLoggedInDisplay";
 import LoggedInDisplay from "./LoggedInDisplay";
+import NotLoggedInDisplay from "./NotLoggedInDisplay";
+import { ChessBoardProps } from "./chess/Board";
 
-interface LeftDisplayProps {}
+type LeftDisplayProps = ChessBoardProps & {};
 
 export const metadata: Metadata = {
   title: "Chessalyze",
 };
 
-export const LeftDisplay: React.FC<LeftDisplayProps> = ({}) => {
+export const LeftDisplay: React.FC<LeftDisplayProps> = ({
+  boardState,
+  game,
+  setBoardState,
+}) => {
   const { data, loading } = useMeQuery();
   const [logout] = useLogoutMutation({
     refetchQueries: [MeDocument],
@@ -27,7 +32,14 @@ export const LeftDisplay: React.FC<LeftDisplayProps> = ({}) => {
   if (!data?.me) {
     body = <NotLoggedInDisplay />;
   } else if (data.me) {
-    body = <LoggedInDisplay user={data.me} />;
+    body = (
+      <LoggedInDisplay
+        user={data.me}
+        boardState={boardState}
+        game={game}
+        setBoardState={setBoardState}
+      />
+    );
   }
 
   return (

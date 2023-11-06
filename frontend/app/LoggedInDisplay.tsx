@@ -1,30 +1,33 @@
-import {
-  Button,
-  FormControl,
-  FormHelperText,
-  FormLabel,
-  Input,
-} from "@chakra-ui/react";
-import {
-  LichessResponse,
-  MeDocument,
-  useLogoutMutation,
-} from "../generated/graphql";
+import { Button, Heading } from "@chakra-ui/react";
 import NextLink from "next/link";
-import { Heading } from "@chakra-ui/react";
-import LoadLichessForm from "./LoadLichessForm";
 import { useState } from "react";
+import { MeDocument, useLogoutMutation } from "../generated/graphql";
 import GamesDisplay from "./GamesDisplay";
+import LoadLichessForm from "./LoadLichessForm";
+import { ChessBoardProps } from "./chess/Board";
 import { populateFakeData } from "./utils/fakeData";
 
-const LoggedInDisplay = ({ user }: any) => {
+type LoggedInDisplayProps = Partial<ChessBoardProps> & {
+  user: {
+    __typename?: "User" | undefined;
+    id: number;
+    username: string;
+  };
+};
+
+const LoggedInDisplay: React.FC<LoggedInDisplayProps> = ({
+  user,
+  boardState,
+  game,
+  setBoardState,
+}) => {
   const [logout] = useLogoutMutation({
     refetchQueries: [MeDocument],
   });
 
   const fakeGames = populateFakeData();
 
-  const [games, setGames] = useState(fakeGames);
+  const [games, setGames] = useState([] as any);
 
   return (
     <div className="flex-grow text-center space-y-5 h-full w-full relative">
@@ -36,10 +39,15 @@ const LoggedInDisplay = ({ user }: any) => {
         </NextLink>
       </div>
       {games.length === 0 ? (
-        <div>error</div>
+        // <div>error</div>
+        <LoadLichessForm setGames={setGames} />
       ) : (
-        // <LoadLichessForm setGames={setGames} />
-        <GamesDisplay games={fakeGames} />
+        <GamesDisplay
+          games={games}
+          game={game}
+          boardState={boardState}
+          setBoardState={setBoardState}
+        />
       )}
       <Button
         className="bg-red-300 absolute bottom-0"
