@@ -5,7 +5,6 @@ import { MeDocument, useLogoutMutation } from "../generated/graphql";
 import GamesDisplay from "./GamesDisplay";
 import LoadLichessForm from "./LoadLichessForm";
 import { ChessBoardProps } from "./chess/Board";
-import { populateFakeData } from "./utils/fakeData";
 
 type LoggedInDisplayProps = Partial<ChessBoardProps> & {
   user: {
@@ -17,15 +16,13 @@ type LoggedInDisplayProps = Partial<ChessBoardProps> & {
 
 const LoggedInDisplay: React.FC<LoggedInDisplayProps> = ({
   user,
-  boardState,
-  game,
-  setBoardState,
+  ...props
 }) => {
   const [logout] = useLogoutMutation({
     refetchQueries: [MeDocument],
   });
 
-  const fakeGames = populateFakeData();
+  // const fakeGames = populateFakeData();
 
   const [games, setGames] = useState([] as any);
 
@@ -42,12 +39,7 @@ const LoggedInDisplay: React.FC<LoggedInDisplayProps> = ({
         // <div>error</div>
         <LoadLichessForm setGames={setGames} />
       ) : (
-        <GamesDisplay
-          games={games}
-          game={game}
-          boardState={boardState}
-          setBoardState={setBoardState}
-        />
+        <GamesDisplay games={games} {...props} />
       )}
       <Button
         className="bg-red-300 absolute bottom-0"

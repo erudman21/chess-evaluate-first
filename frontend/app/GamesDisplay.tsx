@@ -7,12 +7,7 @@ type GamesDisplayProps = Partial<ChessBoardProps> & {
   games: any;
 };
 
-const GamesDisplay: React.FC<GamesDisplayProps> = ({
-  games,
-  boardState,
-  game,
-  setBoardState,
-}) => {
+const GamesDisplay: React.FC<GamesDisplayProps> = ({ games, ...props }) => {
   const [isAnalyzing, setAnalyzing] = useState(-1);
 
   return (
@@ -31,9 +26,7 @@ const GamesDisplay: React.FC<GamesDisplayProps> = ({
               key={i}
               index={i}
               lcGame={lcGame}
-              boardState={boardState}
-              game={game}
-              setBoardState={setBoardState}
+              {...props}
             />
           );
       })}

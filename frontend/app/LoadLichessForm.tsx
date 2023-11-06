@@ -17,7 +17,7 @@ const LoadLichessForm = ({ setGames }: LoadLichessFormProps) => {
   const [loadGames, { loading }] = useGamesLazyQuery();
 
   return (
-    <div className="items-center">
+    <div className="flex justify-center">
       <Formik
         initialValues={{ username: "" }}
         onSubmit={async ({ username }) => {

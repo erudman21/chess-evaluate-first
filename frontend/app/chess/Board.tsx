@@ -1,24 +1,24 @@
 import { Button } from "@chakra-ui/react";
-import { Chess, Square } from "chess.js";
+import { Chess } from "chess.js";
 import ChessBoard from "chessboardjsx";
-import { Dispatch, SetStateAction, useMemo, useState } from "react";
-import Engine, { StockfishResponse } from "./Engine";
+import { Dispatch, SetStateAction, useState } from "react";
+import Engine from "./Engine";
+import EngineComponent from "./EngineComponent";
 
 export type ChessBoardProps = {
   setBoardState: Dispatch<SetStateAction<string>>;
   boardState: string;
   game: Chess;
+  engine: Engine;
 };
 
 const Board: React.FC<ChessBoardProps> = ({
   game,
   boardState,
   setBoardState,
+  engine,
 }) => {
   const [gameStatus, setGameStatus] = useState("");
-  const engine = useMemo(() => new Engine(), []);
-  // BestMove
-  const [bm, setBm] = useState("");
 
   const onDrop = ({ sourceSquare, targetSquare }: any) => {
     try {
@@ -27,19 +27,11 @@ const Board: React.FC<ChessBoardProps> = ({
         to: targetSquare,
         promotion: "q",
       });
-      console.log(move);
       if (move === null) return;
 
       setBoardState(game.fen());
 
-      engine.evaluatePosition(game.fen(), 20);
-      engine.onMessage(({ bestMove }: StockfishResponse) => {
-        if (bestMove) {
-          game.get(bestMove.substring(0, 2) as Square);
-          console.log(game.get(bestMove.substring(0, 2) as Square));
-          setBm(bestMove);
-        }
-      });
+      engine.evaluatePosition(game.fen());
 
       if (game.isGameOver()) {
         if (game.isCheckmate()) {
@@ -64,15 +56,15 @@ const Board: React.FC<ChessBoardProps> = ({
   };
 
   return (
-    <div>
-      <div className="absolute top-8 text-lg">{bm}</div>
+    <div className="relative">
+      <EngineComponent engine={engine} game={game} />
       <ChessBoard width={800} position={boardState} onDrop={onDrop} />
       {boardState === "start" ? (
         ""
       ) : (
         <Button
           backgroundColor="red"
-          className="bg-red-400 mt-5 float-right absolute right-10 bottom-4"
+          className="bg-red-400 mt-5 right-0 absolute -bottom-12"
           onClick={resetBoard}
         >
           Reset Board
