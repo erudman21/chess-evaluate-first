@@ -1,15 +1,24 @@
 import { Select } from "@chakra-ui/react";
-import { useState } from "react";
+import { Dispatch, SetStateAction } from "react";
 import { ChessBoardProps } from "./Board";
 import { StockfishResponse } from "./Engine";
 import { formatContinuation } from "./utils/engineUtils";
 
-type EngineComponentProps = Partial<ChessBoardProps> & {};
+type EngineComponentProps = Partial<ChessBoardProps> & {
+  evaluation: number;
+  setEvaluation: Dispatch<SetStateAction<number>>;
+  continuation: string;
+  setContinuation: Dispatch<SetStateAction<string>>;
+};
 
-const EngineComponent: React.FC<EngineComponentProps> = ({ engine, game }) => {
-  const [evaluation, setEvaluation] = useState(0);
-  const [continuation, setContinuation] = useState("");
-
+const EngineComponent: React.FC<EngineComponentProps> = ({
+  engine,
+  game,
+  evaluation,
+  setEvaluation,
+  continuation,
+  setContinuation,
+}) => {
   engine!.onMessage(({ continuation, evaluation }: StockfishResponse) => {
     if (evaluation) {
       setEvaluation(evaluation);

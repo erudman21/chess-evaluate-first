@@ -18,11 +18,7 @@ export const metadata: Metadata = {
   title: "Chessalyze",
 };
 
-export const LeftDisplay: React.FC<LeftDisplayProps> = ({
-  boardState,
-  game,
-  setBoardState,
-}) => {
+export const LeftDisplay: React.FC<LeftDisplayProps> = ({ ...props }) => {
   const { data, loading } = useMeQuery();
   const [logout] = useLogoutMutation({
     refetchQueries: [MeDocument],
@@ -32,14 +28,7 @@ export const LeftDisplay: React.FC<LeftDisplayProps> = ({
   if (!data?.me) {
     body = <NotLoggedInDisplay />;
   } else if (data.me) {
-    body = (
-      <LoggedInDisplay
-        user={data.me}
-        boardState={boardState}
-        game={game}
-        setBoardState={setBoardState}
-      />
-    );
+    body = <LoggedInDisplay user={data.me} {...props} />;
   }
 
   return (

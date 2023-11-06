@@ -8,10 +8,9 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import { Dispatch, SetStateAction, useMemo, useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { LichessResponse } from "../generated/graphql";
 import { ChessBoardProps } from "./chess/Board";
-import Engine from "./chess/Engine";
 
 type GameCardProps = Partial<ChessBoardProps> & {
   lcGame: LichessResponse;
@@ -28,10 +27,10 @@ const GameCard: React.FC<GameCardProps> = ({
   index,
   isAnalyzing,
   setAnalyzing,
+  engine,
 }) => {
   const [gameHistory, setGameHistory] = useState([] as string[]);
   const [historyIndex, setHistoryIndex] = useState(0);
-  const engine = useMemo(() => new Engine(), []);
 
   const loadGameOnBoard = () => {
     game?.loadPgn(lcGame.moves);
@@ -39,6 +38,7 @@ const GameCard: React.FC<GameCardProps> = ({
     setGameHistory(game!.history());
     setHistoryIndex(game!.history().length);
     setAnalyzing(index);
+    engine?.evaluatePosition(game?.fen());
   };
 
   const makeMove = () => {
@@ -46,6 +46,7 @@ const GameCard: React.FC<GameCardProps> = ({
       game?.move(gameHistory[historyIndex]);
       setBoardState!(game!.fen());
       setHistoryIndex(historyIndex + 1);
+      engine?.evaluatePosition(game?.fen());
     }
   };
 
@@ -54,20 +55,9 @@ const GameCard: React.FC<GameCardProps> = ({
       game?.undo();
       setBoardState!(game!.fen());
       setHistoryIndex(historyIndex - 1);
+      engine?.evaluatePosition(game?.fen());
     }
   };
-
-  // engine.evaluatePosition(game!.fen(), 20);
-  // engine.onMessage(({ bestMove, evaluation }: StockfishResponse) => {
-  // 	if (bestMove) {
-  // 		game.get(bestMove.substring(0, 2) as Square);
-  // 		console.log(game.get(bestMove.substring(0, 2) as Square));
-  // 		setBm(bestMove);
-  // 	}
-  // 	if (evaluation) {
-  // 		console.log(evaluation);
-  // 	}
-  // });
 
   const whitePlayer = lcGame.players.white;
   const blackPlayer = lcGame.players.black;

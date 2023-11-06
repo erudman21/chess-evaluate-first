@@ -22,8 +22,6 @@ const LoggedInDisplay: React.FC<LoggedInDisplayProps> = ({
     refetchQueries: [MeDocument],
   });
 
-  // const fakeGames = populateFakeData();
-
   const [games, setGames] = useState([] as any);
 
   return (
@@ -36,7 +34,6 @@ const LoggedInDisplay: React.FC<LoggedInDisplayProps> = ({
         </NextLink>
       </div>
       {games.length === 0 ? (
-        // <div>error</div>
         <LoadLichessForm setGames={setGames} />
       ) : (
         <GamesDisplay games={games} {...props} />
