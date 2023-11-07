@@ -5,8 +5,8 @@ import { StockfishResponse } from "./Engine";
 import { formatContinuation } from "./utils/engineUtils";
 
 type EngineComponentProps = Partial<ChessBoardProps> & {
-  evaluation: number;
-  setEvaluation: Dispatch<SetStateAction<number>>;
+  evaluation: string;
+  setEvaluation: Dispatch<SetStateAction<string>>;
   continuation: string;
   setContinuation: Dispatch<SetStateAction<string>>;
 };
@@ -19,8 +19,19 @@ const EngineComponent: React.FC<EngineComponentProps> = ({
   continuation,
   setContinuation,
 }) => {
-  engine!.onMessage(({ continuation, evaluation }: StockfishResponse) => {
-    if (evaluation) {
+  engine!.onMessage(({ continuation, evaluation, mate }: StockfishResponse) => {
+    if (mate) {
+      let color;
+      if (mate > 0) {
+        color = game?.turn() === "w" ? "White" : "Black";
+      } else {
+        color = game?.turn() === "w" ? "Black" : "White";
+      }
+      setEvaluation(`${color} has mate in ${Math.abs(mate)}`);
+    } else if (evaluation) {
+      if (game?.turn() === "b") {
+        evaluation = (-parseInt(evaluation)).toString();
+      }
       setEvaluation(evaluation);
     }
 

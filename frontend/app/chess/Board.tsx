@@ -19,7 +19,7 @@ const Board: React.FC<ChessBoardProps> = ({
   engine,
 }) => {
   const [gameStatus, setGameStatus] = useState("");
-  const [evaluation, setEvaluation] = useState(0);
+  const [evaluation, setEvaluation] = useState("");
   const [continuation, setContinuation] = useState("");
 
   const onDrop = ({ sourceSquare, targetSquare }: any) => {
@@ -55,7 +55,7 @@ const Board: React.FC<ChessBoardProps> = ({
   const resetBoard = () => {
     game.reset();
     setBoardState("start");
-    setEvaluation(0);
+    setEvaluation("");
     setContinuation("");
   };
 

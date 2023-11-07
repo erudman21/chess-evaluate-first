@@ -1,6 +1,7 @@
 export type StockfishResponse = {
-  evaluation: number;
+  evaluation: string;
   continuation: string;
+  mate: number;
 };
 
 export default class Engine {
@@ -27,12 +28,17 @@ export default class Engine {
       const correctDepth = e.data?.match(re);
 
       if (correctDepth) {
-        const evaluation =
-          correctDepth.input.match(/cp\s-?\d+/)[0].split(" ")[1] / 100;
-
         const continuation = correctDepth.input.split("pv ")[2];
+        if (correctDepth.input.includes("mate")) {
+          const mate = correctDepth.input.match(/mate\s-?\d+/)[0].split(" ")[1];
+          console.log(mate);
+          callback({ mate, continuation });
+        } else {
+          const evaluation =
+            correctDepth.input.match(/cp\s-?\d+/)[0].split(" ")[1] / 100;
 
-        callback({ evaluation, continuation });
+          callback({ evaluation, continuation });
+        }
       }
     });
   }

@@ -36,7 +36,7 @@ const LoggedInDisplay: React.FC<LoggedInDisplayProps> = ({
       {games.length === 0 ? (
         <LoadLichessForm setGames={setGames} />
       ) : (
-        <GamesDisplay games={games} {...props} />
+        <GamesDisplay games={games} setGames={setGames} {...props} />
       )}
       <Button
         className="bg-red-300 absolute bottom-0"
