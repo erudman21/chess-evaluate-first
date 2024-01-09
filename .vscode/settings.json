@@ -1,15 +1,21 @@
 {
-	"editor.formatOnSave": true,
-	"[typescript]": {
-		"editor.codeActionsOnSave": {
-			"source.organizeImports": true,
-			"source.removeUnusedImports": true
-		}
-	},
-	"[typescriptreact]": {
-		"editor.codeActionsOnSave": {
-			"source.organizeImports": true,
-			"source.removeUnusedImports": true
-		}
+  "editor.formatOnSave": true,
+  "[typescript]": {
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": true,
+      "source.removeUnusedImports": true
+    }
+  },
+  "[typescriptreact]": {
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": true,
+      "source.removeUnusedImports": true
+    }
+  },
+  "[typescript][typescriptreact]": {
+    "editor.codeActionsOnSave": {
+		"source.organizeImports": "explicit",
+		"source.removeUnusedImports": "explicit"
 	}
+  }
 }
